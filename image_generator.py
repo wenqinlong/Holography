@@ -4,10 +4,12 @@ from PIL import Image
 from PIL import ImageFont, ImageDraw, ImageOps
 
 width, height = 100, 100
-letter_uppercase = list(string.ascii_uppercase)
 digits = list(string.digits)
-texts = letter_uppercase + digits
+letter_uppercase = list(string.ascii_uppercase)
 
+texts = digits + letter_uppercase
+
+label = 0
 for text in texts:
     # enumerate the texts
     os.makedirs('./hologram_image/{}'.format(text), exist_ok=True)
@@ -25,4 +27,5 @@ for text in texts:
         for angle in range(0, 360, 5):
             # rotate the text every 5 degrees
             rot_im = img.rotate(angle, expand=False, fillcolor="white")
-            rot_im.save('./hologram_image/{}/{}_size_{}_angle_{}_thickness.png'.format(text, text, font_size, angle))
+            rot_im.save('./hologram_image/{}/{}_{}_size_{}_angle_{}.png'.format(text, label, text, font_size, angle))
+    label += 1
