@@ -1,2 +1,3 @@
 # Holography
-Phase matrice
+Hologram
+Phase matrices
