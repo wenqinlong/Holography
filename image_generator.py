@@ -1,7 +1,7 @@
 import os
 import string
 from PIL import Image
-from PIL import ImageFont, ImageDraw, ImageOps
+from PIL import ImageFont, ImageDraw
 
 width, height = 100, 100
 digits = list(string.digits)
@@ -13,7 +13,7 @@ label = 0
 for text in texts:
     # enumerate the texts
     os.makedirs('./hologram_image/{}'.format(text), exist_ok=True)
-
+    num = 0
     for font_size in range(30, 105, 5):
         # change the font size
         img = Image.new("L", (width, height), color=255)   # "L": (8-bit pixels, black and white)
@@ -27,5 +27,6 @@ for text in texts:
         for angle in range(0, 360, 5):
             # rotate the text every 5 degrees
             rot_im = img.rotate(angle, expand=False, fillcolor="white")
-            rot_im.save('./hologram_image/{}/{}_{}_size_{}_angle_{}.png'.format(text, label, text, font_size, angle))
+            rot_im.save('./hologram_image/{}/{:04}_{}_{}_size_{}_angle_{}.png'.format(text, num, label, text, font_size, angle))
+            num += 1
     label += 1
