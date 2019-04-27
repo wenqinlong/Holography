@@ -8,7 +8,7 @@ import string
 class GenerateTFRecord:
     '''
     Convert the image to binary records and store them in TFRecord format.
-    It is efficient to read data
+    It is efficient to read data.
     '''
 
     def __init__(self, labels):
@@ -30,6 +30,7 @@ class GenerateTFRecord:
     def _convert_image(self, img_path):
         label = self._get_label_with_filename(img_path)
         img = Image.open(img_path)
+
         img_int = np.array(img, dtype=np.int64)
         img_shape = img_int.shape
         assert img_shape == (100, 100)

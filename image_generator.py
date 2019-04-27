@@ -27,6 +27,6 @@ for text in texts:
         for angle in range(0, 360, 5):
             # rotate the text every 5 degrees
             rot_im = img.rotate(angle, expand=False, fillcolor="white")
-            rot_im.save('./hologram_image/{}/{:04}_{}_{}_size_{}_angle_{}.png'.format(text, num, label, text, font_size, angle))
+            rot_im.save('./hologram_image/{}/{num:04}_{}_{}_size_{font_size:03}_angle_{angle:03}.png'.format(text, num, label, text, font_size, angle))
             num += 1
     label += 1
