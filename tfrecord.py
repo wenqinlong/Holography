@@ -35,7 +35,8 @@ class GenerateTFRecord:
         assert img_shape == (100, 100)
 
         # convert img to string data
-        img_str = img_int.tostring()
+        img_str = img_int.tobytes()
+
 
         # get filename
         filename = os.path.basename(img_path)   # return the file name without path information
