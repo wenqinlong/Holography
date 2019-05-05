@@ -15,17 +15,18 @@ class GenerateTFRecord:
         assert len(img_folder_paths) == 36
 
         img_folder_paths.sort() # 0-Z
+        writer = tf.python_io.TFRecordWriter(tfrecord_file_name)
         for folder in img_folder_paths:
             folder_path = os.path.join(img_folder, folder)  # get the path of folder which is images in
             imgs = sorted(os.listdir(folder_path))
             imgs = [os.path.abspath(os.path.join(folder_path, i)) for i in imgs]
             assert len(imgs) == 1080
 
-            with tf.python_io.TFRecordWriter(tfrecord_file_name) as writer:
-                for img in imgs:
-                    # print(img)
-                    example = self._convert_img(img)
-                    writer.write(example.SerializeToString())
+            for img in imgs:
+                # print(img)
+                example = self._convert_img(img)
+                writer.write(example.SerializeToString())
+        writer.close()
 
     def _convert_img(self, img_path):
         label = self._get_label_with_filename(img_path)   # label: [0, ..., 35]
@@ -57,45 +58,45 @@ class GenerateTFRecord:
 
 
 if  __name__ == '__main__':
-    # digits = list(string.digits)
-    # letter_uppercase = list(string.ascii_uppercase)
-    # keys = digits + letter_uppercase
-    # labels = {k: v for v, k in enumerate(keys)}
-    # print(labels)
-    # t = GenerateTFRecord(labels)
-    # t.convert_image_folder('hologram_image', 'images.tfrecord')
+    digits = list(string.digits)
+    letter_uppercase = list(string.ascii_uppercase)
+    keys = digits + letter_uppercase
+    labels = {k: v for v, k in enumerate(keys)}
+    print(labels)
+    t = GenerateTFRecord(labels)
+    t.convert_image_folder('hologram_image', 'images.tfrecord')
 
-    def read_and_decode(filename_queue):
-        reader = tf.TFRecordReader()
-        _, serialized_example = reader.read(filename_queue)
-        features = tf.parse_single_example(
-            serialized_example,
-            # Defaults are not specified since both keys are required.
-            features={
-                'filename': tf.FixedLenFeature([], tf.string),
-                'rows': tf.FixedLenFeature([], tf.int64),
-                'cols': tf.FixedLenFeature([], tf.int64),
-                'image': tf.FixedLenFeature([], tf.string),
-                'label': tf.FixedLenFeature([], tf.int64)
-            })
-        image = tf.decode_raw(features['image'], tf.uint8)
-        label = tf.cast(features['label'], tf.int32)
+    # def read_and_decode(filename_queue):
+    #     reader = tf.TFRecordReader()
+    #     _, serialized_example = reader.read(filename_queue)
+    #     features = tf.parse_single_example(
+    #         serialized_example,
+    #         # Defaults are not specified since both keys are required.
+    #         features={
+    #             'filename': tf.FixedLenFeature([], tf.string),
+    #             'rows': tf.FixedLenFeature([], tf.int64),
+    #             'cols': tf.FixedLenFeature([], tf.int64),
+    #             'image': tf.FixedLenFeature([], tf.string),
+    #             'label': tf.FixedLenFeature([], tf.int64)
+    #         })
+    #     image = tf.decode_raw(features['image'], tf.uint8)
+    #     label = tf.cast(features['label'], tf.int32)
+    #
+    #     return image, label
+    #
+    # def get_all_records(FILE):
+    #     with tf.Session() as sess:
+    #         filename_queue = tf.train.string_input_producer([FILE])
+    #         image, label = read_and_decode(filename_queue)
+    #         init_op = tf.global_variables_initializer()
+    #         sess.run(init_op)
+    #         coord = tf.train.Coordinator()
+    #         threads = tf.train.start_queue_runners(coord=coord)
+    #         for i in range(2053):
+    #             example, l = sess.run([image, label])
+    #             print(l)
+    #         coord.request_stop()
+    #         coord.join(threads)
 
-        return image, label
-
-    def get_all_records(FILE):
-        with tf.Session() as sess:
-            filename_queue = tf.train.string_input_producer([FILE])
-            image, label = read_and_decode(filename_queue)
-            init_op = tf.global_variables_initializer()
-            sess.run(init_op)
-            coord = tf.train.Coordinator()
-            threads = tf.train.start_queue_runners(coord=coord)
-            for i in range(2053):
-                example, l = sess.run([image, label])
-                print(l)
-            coord.request_stop()
-            coord.join(threads)
-
-
-    get_all_records('images.tfrecord')
+    #
+    # get_all_records('images.tfrecord')

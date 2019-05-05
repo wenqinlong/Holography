@@ -17,15 +17,16 @@ class GenerateTFRecord:
     def _convert_image_folder(self, img_folder, tfreocrd_file_name):
         img_folder_paths = os.listdir(img_folder)
         img_folder_paths.sort()
+        writer = tf.python_io.TFRecordWriter(tfreocrd_file_name)
         for folder in img_folder_paths:
             folder_path = os.path.join(img_folder, folder)
             imgs = sorted(os.listdir(folder_path))
             imgs = [os.path.abspath(os.path.join(folder_path, i)) for i in imgs]  # get the absolute path of every image
 
-            with tf.python_io.TFRecordWriter(tfreocrd_file_name) as writer:
-                for img in imgs:
-                    example = self._convert_image(img)
-                    writer.write(example.SerializeToString())
+            for img in imgs:
+                example = self._convert_image(img)
+                writer.write(example.SerializeToString())
+        writer.close()
 
     def _convert_image(self, img_path):
         label = self._get_label_with_filename(img_path)

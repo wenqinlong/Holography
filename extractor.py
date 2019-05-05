@@ -26,9 +26,9 @@ class TFRecordExtractor:
         }
 
         sample = tf.parse_single_example(tfrecord, features)
-        # print(sample['image'])
-        image = tf.decode_raw(sample['image'], out_type=tf.int64)   # if not use gfile
-        # image = tf.image.decode_png(sample['image'], channels=0, dtype=tf.uint8,)
+
+        # image = tf.decode_raw(sample['image'], out_type=tf.int64)   # if not use gfile
+        image = tf.image.decode_png(sample['image'], channels=0, dtype=tf.uint8,)
         img_shape = tf.stack([sample['rows'], sample['cols'], 1], axis=0)
         label = sample['label']
         filename = sample['filename']
@@ -56,10 +56,10 @@ class TFRecordExtractor:
                 next_image = iterator.get_next()
 
                 img_data = sess.run(next_image)
-                print(img_data[2])
+                print(img_data[0])
 
 
 if __name__ == '__main__':
     path = '/home/qinlong/PycharmProjects/NEU/Holography'
-    t = TFRecordExtractor(path, './images.tfrecord', 9, 2)
+    t = TFRecordExtractor(path, './images_gfile.tfrecord', 10, 2)
     t.show_images()
